@@ -11,3 +11,8 @@ clap = { version = "3.2.16", features = ["derive"] }
 env_logger = "0.9.0"
 log = "0.4.17"
 tokio = { version = "1.20.1", features = ["full"] }
+shared = {path = "../shared"}
+serde = { version = "1.0.141", features = ["derive"] }
+mongodb = "2.3.0"
+axum-macros = "0.2.3"
+futures-util = "0.3.21"
