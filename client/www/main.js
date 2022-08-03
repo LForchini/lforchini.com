@@ -1,6 +1,6 @@
-import init, { run_app } from './pkg/yew_wasm_pack_minimal.js';
+import init, { run_app } from './pkg/client.js';
 async function main() {
-   await init('/pkg/yew_wasm_pack_minimal_bg.wasm');
-   run_app();
+    await init('/pkg/client_bg.wasm');
+    run_app();
 }
-main()
+main();
