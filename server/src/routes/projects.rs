@@ -5,7 +5,9 @@ use mongodb::{bson::doc, error::Error, Collection};
 use shared::Project;
 
 #[debug_handler]
-pub async fn get_all(Extension(collection): Extension<Collection<Project>>) -> impl IntoResponse {
+pub async fn get_projects(
+    Extension(collection): Extension<Collection<Project>>,
+) -> impl IntoResponse {
     let cursor = collection.find(None, None).await.unwrap();
     let projects = cursor
         .collect::<Vec<Result<Project, Error>>>()
