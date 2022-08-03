@@ -31,6 +31,16 @@ async fn main() {
 
     if cli_args.production {
         log::debug!("Running in production mode");
+        if cli_args.key_filename == None || cli_args.cert_filename == None {
+            if cli_args.key_filename == None {
+                log::error!("Key file was not specified");
+            }
+            if cli_args.cert_filename == None {
+                log::error!("Cert file was not specified");
+            }
+
+            panic!("Cannot run in production mode without specifying HTTPS files");
+        }
     } else {
         log::debug!("Running in developer mode");
     }
