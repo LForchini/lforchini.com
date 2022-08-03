@@ -1,34 +1,29 @@
+use shared::ProjectInfoPayload;
 use yew::prelude::*;
-
-const PROJECTS: [ProjectInfo; 2] = [
-    ProjectInfo {
-        name: "DinoDungeons",
-        link: Some("http://github.com/LForchini/DinoDungeons"),
-        desc: "A small game I made in a team of 4 during my apprenticeship in a 2 day hackathon.",
-    },
-    ProjectInfo {
-        name: "lforchini.com",
-        link: Some("http://github.com/LForchini/lforchini.com"),
-        desc: "This personal website made entirely in Rust.",
-    },
-];
-
-struct ProjectInfo {
-    name: &'static str,
-    link: Option<&'static str>,
-    desc: &'static str,
-}
 
 pub enum Msg {}
 
-pub struct Projects {}
+pub struct Projects {
+    projects: Vec<ProjectInfoPayload>,
+}
 
 impl Component for Projects {
     type Message = Msg;
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self {}
+        let projects = vec![ProjectInfoPayload {
+        name: "DinoDungeons".to_string(),
+        link: Some("http://github.com/LForchini/DinoDungeons".to_string()),
+        desc: "A small game I made in a team of 4 during my apprenticeship in a 2 day hackathon.".to_string(),
+    },
+    ProjectInfoPayload {
+        name: "lforchini.com".to_string(),
+        link: Some("http://github.com/LForchini/lforchini.com".to_string()),
+        desc: "This personal website made entirely in Rust.".to_string(),
+    }];
+
+        Self { projects }
     }
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
@@ -37,7 +32,7 @@ impl Component for Projects {
                 <p> {"Some of the projects I've worked on"} </p>
                 <ul>
                     {
-                        PROJECTS.into_iter().map(|info| {
+                        self.projects.clone().into_iter().map(|info| {
                             html!{
                                 <li key={info.name.to_string()}>
                                     <p>
