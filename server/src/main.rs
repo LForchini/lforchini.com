@@ -1,4 +1,5 @@
-use axum::{routing::get, Router};
+use axum::handler::Handler;
+use axum::{http, response::IntoResponse, routing::get, Router};
 use clap::Parser;
 use std::net::SocketAddr;
 
@@ -19,7 +20,9 @@ async fn main() {
     let args = Args::parse();
 
     log::debug!("Creating routes");
-    let app = Router::new().route("/", get(root));
+    let app = Router::new()
+        .fallback(fallback.into_service())
+        .route("/", get(root));
 
     log::debug!("Running on 127.0.0.1:{:#?}", args.port);
     let addr = SocketAddr::from(([127, 0, 0, 1], args.port));
@@ -33,4 +36,8 @@ async fn main() {
 
 async fn root() -> &'static str {
     "Hello, World!"
+}
+
+async fn fallback(uri: http::Uri) -> impl IntoResponse {
+    (http::StatusCode::NOT_FOUND, format!("No route {}", uri))
 }
