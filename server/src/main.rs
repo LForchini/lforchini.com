@@ -1,12 +1,13 @@
+mod routes;
+
 use axum::handler::Handler;
 use axum::{extract::Extension, http, response::IntoResponse, routing::get, Router};
 use clap::Parser;
 use mongodb::options::ClientOptions;
 use mongodb::Client;
+use routes::projects;
+use shared::Project;
 use std::net::SocketAddr;
-use std::sync::Arc;
-
-mod project_routes;
 
 #[derive(Debug, Parser)]
 struct Args {
@@ -40,29 +41,21 @@ async fn main() {
 
     log::debug!("Connecting to MongoDB Database");
     let database = client.database("lforchini_com");
-    let shared_db = Arc::new(database);
+    let projects_collection = database.collection::<Project>("projects");
 
     if args.initialise {
         log::info!("Initialising DB");
-        let shared_db = Arc::clone(&shared_db);
-        project_routes::initialize(shared_db).await;
+        projects::initialize(projects_collection.clone()).await;
     }
 
     log::debug!("Creating routes");
     let app = Router::new()
         .fallback(fallback.into_service())
-        .route("/", get(root))
         .route(
-            "/project",
-            get(project_routes::get_all).post(project_routes::post),
+            "/projects",
+            get(projects::get_all).post(projects::add_project),
         )
-        .route(
-            "/project/:id",
-            get(project_routes::get_one)
-                .put(project_routes::put)
-                .delete(project_routes::delete),
-        )
-        .layer(Extension(shared_db));
+        .layer(Extension(projects_collection));
 
     log::debug!("Running on 127.0.0.1:{:?}", args.port);
     let addr = SocketAddr::from(([127, 0, 0, 1], args.port));
@@ -72,10 +65,6 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .unwrap();
-}
-
-async fn root() -> &'static str {
-    "Hello, World!"
 }
 
 async fn fallback(uri: http::Uri) -> impl IntoResponse {
