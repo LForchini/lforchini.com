@@ -26,7 +26,7 @@ impl Component for App {
                     <p> {"You can contact me with the methods below"} </p>
                     <ul>
                         <li>
-                            <p> {"Email: leonardo.forchini@gmail.com"} </p>
+                            <p> {"Email: leo@lforchini.com"} </p>
                         </li>
                     </ul>
                 </div>
