@@ -124,9 +124,13 @@ impl Projects {
         let response: Response = response.dyn_into().unwrap();
 
         let projects_string = JsFuture::from(response.text()?).await?.as_string().unwrap();
-        let projects = serde_json::from_str(&projects_string).unwrap();
 
-        Ok(projects)
+        match serde_json::from_str(&projects_string) {
+            Ok(projects) => Ok(projects),
+            Err(_) => Err(FetchError {
+                err: JsValue::from_str("Parsing error"),
+            }),
+        }
     }
 }
 
