@@ -1,7 +1,14 @@
 use shared::Project;
+use wasm_bindgen::{JsCast, JsValue};
+use wasm_bindgen_futures::JsFuture;
+use web_sys::{Request, RequestInit, Response};
 use yew::prelude::*;
 
-pub enum Msg {}
+pub enum Msg {
+    SetProjects(Vec<Project>),
+    FetchProjects,
+    None,
+}
 
 #[derive(Clone)]
 pub struct Projects {
@@ -16,6 +23,31 @@ impl Component for Projects {
         let projects = vec![];
 
         Self { projects }
+    }
+
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+        match msg {
+            Msg::SetProjects(projects) => {
+                self.projects = projects;
+                true
+            }
+            Msg::FetchProjects => {
+                ctx.link().send_future(async {
+                    match Self::fetch_projects().await {
+                        Ok(projects) => Msg::SetProjects(projects),
+                        Err(_) => Msg::None,
+                    }
+                });
+                false
+            }
+            Msg::None => false,
+        }
+    }
+
+    fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
+        if first_render {
+            ctx.link().send_message(Msg::FetchProjects);
+        }
     }
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
@@ -71,5 +103,46 @@ impl Component for Projects {
                 }
             </div>
         }
+    }
+}
+
+impl Projects {
+    async fn fetch_projects() -> Result<Vec<Project>, FetchError> {
+        let mut opts = RequestInit::new();
+        opts.method("GET");
+
+        let mut url = "/api/projects";
+        let window = gloo_utils::window();
+        let location = window.location().host()?;
+        if location.split(':').collect::<Vec<&str>>()[0] == "localhost" {
+            url = "http://localhost:8088/projects"
+        }
+        log::info!("trying to fetch from {:#?}", url);
+        let request = Request::new_with_str_and_init(url, &opts)?;
+
+        let response = JsFuture::from(window.fetch_with_request(&request)).await?;
+        let response: Response = response.dyn_into().unwrap();
+
+        let projects_string = JsFuture::from(response.text()?).await?.as_string().unwrap();
+        let projects = serde_json::from_str(&projects_string).unwrap();
+
+        Ok(projects)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FetchError {
+    err: JsValue,
+}
+impl std::fmt::Display for FetchError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        std::fmt::Debug::fmt(&self.err, f)
+    }
+}
+impl std::error::Error for FetchError {}
+
+impl From<JsValue> for FetchError {
+    fn from(value: JsValue) -> Self {
+        Self { err: value }
     }
 }

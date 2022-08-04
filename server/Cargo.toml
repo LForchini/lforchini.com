@@ -16,3 +16,4 @@ serde = { version = "1.0.141", features = ["derive"] }
 mongodb = "2.3.0"
 axum-macros = "0.2.3"
 futures-util = "0.3.21"
+tower-http = { version = "0.3.4", features = ["cors"] }
