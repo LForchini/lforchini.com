@@ -53,7 +53,10 @@ async fn main() {
         .fallback(fallback.into_service())
         .route(
             "/projects",
-            get(projects::get_projects).post(projects::add_project),
+            get(projects::get_projects)
+                .post(projects::add_project)
+                .put(projects::update_project)
+                .delete(projects::remove_project),
         )
         .layer(Extension(projects_collection));
 

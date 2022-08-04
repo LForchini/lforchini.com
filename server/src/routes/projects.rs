@@ -1,7 +1,11 @@
 use axum::{http::StatusCode, response::IntoResponse, Extension, Json};
 use axum_macros::debug_handler;
 use futures_util::TryStreamExt;
-use mongodb::{bson::doc, error::Error, Collection};
+use mongodb::{
+    bson::{self, doc},
+    error::Error,
+    Collection,
+};
 use shared::Project;
 
 #[debug_handler]
@@ -25,6 +29,34 @@ pub async fn add_project(
     let result = collection.insert_one(project, None).await;
     match result {
         Ok(_) => StatusCode::CREATED,
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}
+
+#[debug_handler]
+pub async fn remove_project(
+    Json(project): Json<Project>,
+    Extension(collection): Extension<Collection<Project>>,
+) -> impl IntoResponse {
+    let result = collection
+        .delete_many(bson::to_document(&project).unwrap(), None)
+        .await;
+    match result {
+        Ok(_) => StatusCode::NO_CONTENT,
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}
+
+#[debug_handler]
+pub async fn update_project(
+    Json((old, new)): Json<(Project, Project)>,
+    Extension(collection): Extension<Collection<Project>>,
+) -> impl IntoResponse {
+    let result = collection
+        .replace_one(bson::to_document(&old).unwrap(), new, None)
+        .await;
+    match result {
+        Ok(_) => StatusCode::NO_CONTENT,
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
     }
 }
