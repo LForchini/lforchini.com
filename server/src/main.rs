@@ -1,6 +1,7 @@
 mod routes;
 
 use axum::handler::Handler;
+use axum::http::{HeaderValue, Method};
 use axum::{extract::Extension, http, response::IntoResponse, routing::get, Router};
 use clap::Parser;
 use mongodb::options::ClientOptions;
@@ -8,6 +9,7 @@ use mongodb::Client;
 use routes::projects;
 use shared::Project;
 use std::net::SocketAddr;
+use tower_http::cors::CorsLayer;
 
 #[derive(Debug, Parser)]
 struct Args {
@@ -18,6 +20,10 @@ struct Args {
     /// Initialise MongoDB
     #[clap(long = "init")]
     initialise: bool,
+
+    /// Run in development mode
+    #[clap(short, long)]
+    dev: bool,
 }
 
 #[tokio::main]
@@ -43,13 +49,13 @@ async fn main() {
     let database = client.database("lforchini_com");
     let projects_collection = database.collection::<Project>("projects");
 
-    if args.initialise {
+    if args.initialise || args.dev {
         log::info!("Initialising DB");
         projects::initialize(projects_collection.clone()).await;
     }
 
     log::debug!("Creating routes");
-    let app = Router::new()
+    let mut app = Router::new()
         .fallback(fallback.into_service())
         .route(
             "/projects",
@@ -59,6 +65,13 @@ async fn main() {
                 .delete(projects::remove_project),
         )
         .layer(Extension(projects_collection));
+
+    if args.dev {
+        let cors = CorsLayer::new()
+            .allow_methods(vec![Method::GET])
+            .allow_origin("http://localhost:8080".parse::<HeaderValue>().unwrap());
+        app = app.layer(cors);
+    }
 
     log::debug!("Running on 127.0.0.1:{:?}", args.port);
     let addr = SocketAddr::from(([127, 0, 0, 1], args.port));
