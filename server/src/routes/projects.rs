@@ -1,6 +1,6 @@
 use axum::{http::StatusCode, response::IntoResponse, Extension, Json};
 use axum_macros::debug_handler;
-use futures_util::StreamExt;
+use futures_util::TryStreamExt;
 use mongodb::{bson::doc, error::Error, Collection};
 use shared::Project;
 
@@ -9,11 +9,7 @@ pub async fn get_projects(
     Extension(collection): Extension<Collection<Project>>,
 ) -> impl IntoResponse {
     let cursor = collection.find(None, None).await.unwrap();
-    let projects = cursor
-        .collect::<Vec<Result<Project, Error>>>()
-        .await
-        .into_iter()
-        .collect::<Result<Vec<Project>, Error>>();
+    let projects: Result<Vec<Project>, Error> = cursor.try_collect().await;
 
     match projects {
         Ok(p) => (StatusCode::OK, Json(Some(p))),
