@@ -1,10 +1,10 @@
-use shared::ProjectInfoPayload;
+use shared::Project;
 use yew::prelude::*;
 
 pub enum Msg {}
 
 pub struct Projects {
-    projects: Vec<ProjectInfoPayload>,
+    projects: Vec<Project>,
 }
 
 impl Component for Projects {
@@ -12,12 +12,12 @@ impl Component for Projects {
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        let projects = vec![ProjectInfoPayload {
+        let projects = vec![Project {
         name: "DinoDungeons".to_string(),
         link: Some("http://github.com/LForchini/DinoDungeons".to_string()),
         desc: "A small game I made in a team of 4 during my apprenticeship in a 2 day hackathon.".to_string(),
     },
-    ProjectInfoPayload {
+    Project{
         name: "lforchini.com".to_string(),
         link: Some("http://github.com/LForchini/lforchini.com".to_string()),
         desc: "This personal website made entirely in Rust.".to_string(),
