@@ -46,7 +46,11 @@ async fn main() {
     );
 
     log::debug!("Connecting to MongoDB Database");
-    let database = client.database("lforchini_com");
+    let mut db_name = "lforchini_com";
+    if args.dev {
+        db_name = "dev_lforchini_com";
+    }
+    let database = client.database(db_name);
     let projects_collection = database.collection::<Project>("projects");
 
     if args.initialise || args.dev {
@@ -68,7 +72,7 @@ async fn main() {
 
     if args.dev {
         let cors = CorsLayer::new()
-            .allow_methods(vec![Method::GET])
+            .allow_methods(vec![Method::GET, Method::POST, Method::PUT, Method::DELETE])
             .allow_origin("http://localhost:8080".parse::<HeaderValue>().unwrap());
         app = app.layer(cors);
     }
@@ -84,5 +88,5 @@ async fn main() {
 }
 
 async fn fallback(uri: http::Uri) -> impl IntoResponse {
-    (http::StatusCode::NOT_FOUND, format!("No route {}", uri))
+    (http::StatusCode::NOT_FOUND, format!("No route: {}", uri))
 }
