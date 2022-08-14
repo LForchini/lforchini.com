@@ -48,8 +48,10 @@ async fn main() {
     log::debug!("Connecting to MongoDB Database");
     let mut db_name = "lforchini_com";
     if args.dev {
+        log::debug!("Running on dev-db");
         db_name = "dev_lforchini_com";
     }
+    log::debug!("Connecting to DB: {}", db_name);
     let database = client.database(db_name);
     let projects_collection = database.collection::<Project>("projects");
 
