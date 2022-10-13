@@ -1,17 +1,8 @@
 use yew::prelude::*;
 
-pub struct App;
-impl Component for App {
-    type Message = ();
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self
-    }
-
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        html! {
-            <h1>{ "Welcome to my site :)" }</h1>
-        }
+#[function_component(App)]
+pub fn app() -> Html {
+    html! {
+        <h1>{ "Welcome to my web site :)" }</h1>
     }
 }
