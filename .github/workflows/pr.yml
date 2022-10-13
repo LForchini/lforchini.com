@@ -1,0 +1,20 @@
+name: PR Check
+
+on:
+    pull_request:
+
+env:
+    CARGO_TERM_COLOR: always
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+            - name: Clippy Check
+              uses: actions-rs/clippy-check@v1.0.7
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Run tests
+              run: cargo test --release
