@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = "0.5.16"
+axum = { version = "0.5.16", features = ["ws"] }
 axum-macros = "0.2.3"
 env_logger = "0.9.1"
 log = "0.4.17"
