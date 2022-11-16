@@ -1,7 +1,10 @@
 name: Build Docker Containers
 
 on:
-    push: ["main", "releases/**"]
+    push:
+        branches:
+            - "main"
+            - "releases/**"
 
 jobs:
     check_syntax:
