@@ -1,3 +1,5 @@
+# Please build in parent dir
+
 FROM rust:latest as build
 
 RUN mkdir /app

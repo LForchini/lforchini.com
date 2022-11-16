@@ -1,3 +1,5 @@
+# Please build in parent dir
+
 FROM rust:1.65.0
 
 RUN mkdir /app

@@ -5,7 +5,7 @@ volumes:
 
 services:
   mongo:
-    image: mongo:latest
+    image: mongo
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
@@ -14,13 +14,13 @@ services:
       - mongo_data:/data/db
 
   frontend:
-    image: frontend
+    image: lforchini/frontend
     build:
       context: ./
       dockerfile: client/Dockerfile
 
   backend:
-    image: backend
+    image: lforchini/backend
     build:
       context: ./
       dockerfile: server/Dockerfile
@@ -30,8 +30,14 @@ services:
     depends_on:
       - mongo
 
+  static:
+    image: lforchini/static
+    build:
+      context: static
+      dockerfile: Dockerfile
+
   router:
-    image: router
+    image: lforchini/router
     build:
       context: ./router
       dockerfile: Dockerfile
@@ -42,3 +48,4 @@ services:
     depends_on:
       - frontend
       - backend
+      - static
