@@ -19,6 +19,7 @@ jobs:
               run: cargo check
 
     build_images:
+        runs-on: ubuntu-latest
         needs: check_syntax
         steps:
             - name: Docker Compose
