@@ -17,10 +17,10 @@ jobs:
             - name: Run Tests
               run: cargo check
 
-    build_client:
-        using: "docker"
-        image: "client/Dockerfile"
-
-    build_server:
-        using: "docker"
-        image: "server/Dockerfile"
+    build_images:
+        needs: check_syntax
+        steps:
+            - name: Docker Compose
+              uses: isbang/compose-action@v1.4.1
+              with:
+                  compose-file: "./docker-compose.yml"
