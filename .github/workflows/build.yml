@@ -1,0 +1,26 @@
+name: Build Docker Containers
+
+on:
+    push:
+        - "main"
+        - "releases/**"
+
+jobs:
+    check_syntax:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Clippy Check
+              uses: actions-rs/clippy-check@v1.0.7
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Run Tests
+              run: cargo check
+
+    build_client:
+        using: "docker"
+        image: "client/Dockerfile"
+
+    build_server:
+        using: "docker"
+        image: "server/Dockerfile"
