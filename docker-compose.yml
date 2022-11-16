@@ -1,0 +1,44 @@
+version: "3.9"
+
+volumes:
+  mongo_data: {}
+
+services:
+  mongo:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+
+  frontend:
+    image: frontend
+    build:
+      context: ./
+      dockerfile: client/Dockerfile
+
+  backend:
+    image: backend
+    build:
+      context: ./
+      dockerfile: server/Dockerfile
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+    #   - MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    depends_on:
+      - mongo
+
+  router:
+    image: router
+    build:
+      context: ./router
+      dockerfile: Dockerfile
+    volumes:
+      - /var/www/certs/:/var/www/certs/
+    ports:
+      - 443:443
+    depends_on:
+      - frontend
+      - backend
