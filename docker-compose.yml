@@ -40,13 +40,13 @@ services:
   registry:
     image: registry:2
     environment:
-      - REGISTRY_AUTH=htpasswd
-      - REGISTRY_AUTH_HTPASSWD_REALM=Registry
-      - REGISTRY_AUTH_HTPASSWD_PATH=/auth/registry.password
-      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/data
-      # - REGISTRY_HTTP_ADDR=0.0.0.0:443
-      # - REGISTRY_HTTP_TLS_CERTIFICATE=/certs/lforchini_com.crt
-      # - REGISTRY_HTTP_TLS_KEY=/certs/lforchini_com.key
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.password
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+      # REGISTRY_HTTP_ADDR: 0.0.0.0:443
+      # REGISTRY_HTTP_TLS_CERTIFICATE: /certs/lforchini_com.crt
+      # REGISTRY_HTTP_TLS_KEY: /certs/lforchini_com.key
     restart: unless-stopped
     volumes:
       - registry_data:/data
