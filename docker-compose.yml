@@ -15,13 +15,13 @@ services:
       - mongo_data:/data/db
 
   frontend:
-    image: lforchini/frontend
+    image: registry.lforchini.com/frontend
     build:
       context: ./
       dockerfile: client/Dockerfile
 
   backend:
-    image: lforchini/backend
+    image: registry.lforchini.com/backend
     build:
       context: ./
       dockerfile: server/Dockerfile
@@ -32,7 +32,7 @@ services:
       - mongo
 
   static:
-    image: lforchini/static
+    image: registry.lforchini.com/static
     build:
       context: static
       dockerfile: Dockerfile
@@ -54,7 +54,7 @@ services:
       # - /var/www/certs:/certs 
 
   router:
-    image: lforchini/router
+    image: registry.lforchini.com/router
     build:
       context: ./router
       dockerfile: Dockerfile
