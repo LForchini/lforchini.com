@@ -59,7 +59,7 @@ services:
       context: ./router
       dockerfile: Dockerfile
     volumes:
-      - /var/www/certs/:/var/www/certs/
+      - /var/www/certs:/certs
     ports:
       - 443:443
     depends_on:
