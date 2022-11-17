@@ -2,6 +2,7 @@ version: "3.9"
 
 volumes:
   mongo_data: {}
+  registry_data: {}
 
 services:
   mongo:
@@ -36,6 +37,15 @@ services:
       context: static
       dockerfile: Dockerfile
 
+  registry:
+    image: registry:2
+    environment:
+      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/data
+      - REGISTRY_HTTP_ADDR=0.0.0.0:8080
+    restart: unless-stopped
+    volumes:
+      - registry_data:/data
+
   router:
     image: lforchini/router
     build:
@@ -49,3 +59,4 @@ services:
       - frontend
       - backend
       - static
+      - registry
