@@ -42,7 +42,7 @@ services:
     environment:
       - REGISTRY_AUTH=htpasswd
       - REGISTRY_AUTH_HTPASSWD_REALM=Registry
-      - REGISTRY_AUTH_HTPASSWD_PATH=${REGISTRY_PASSWD}
+      - REGISTRY_AUTH_HTPASSWD_PATH=/auth/registry.password
       - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/data
       # - REGISTRY_HTTP_ADDR=0.0.0.0:443
       # - REGISTRY_HTTP_TLS_CERTIFICATE=/certs/lforchini_com.crt
@@ -50,6 +50,7 @@ services:
     restart: unless-stopped
     volumes:
       - registry_data:/data
+      - /var/www/auth:/auth
       # - /var/www/certs:/certs 
 
   router:
