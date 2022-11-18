@@ -1,1 +1,1 @@
-pub mod mastodon;
+pub mod contact;

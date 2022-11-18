@@ -1,4 +1,4 @@
-use crate::components::mastodon::Mastodon;
+use crate::components::contact::Contact;
 use yew::prelude::*;
 
 #[function_component(App)]
@@ -7,7 +7,7 @@ pub fn app() -> Html {
         <>
              <h1>{ "Welcome to my web site :)" }</h1>
 
-             <Mastodon />
+             <Contact />
         </>
     }
 }
