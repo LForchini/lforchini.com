@@ -62,8 +62,3 @@ services:
       - /var/www/certs:/certs
     ports:
       - 443:443
-    depends_on:
-      - frontend
-      - backend
-      - static
-      - registry
