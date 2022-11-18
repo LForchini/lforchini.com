@@ -3,7 +3,7 @@ use yew::prelude::*;
 #[function_component(Contact)]
 pub fn contact() -> Html {
     html! {
-        <div>
+        <div id={"contact"}>
             <h1> {"Contact Me"} </h1>
 
             <ul>

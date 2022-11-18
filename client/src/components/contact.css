@@ -1,0 +1,4 @@
+#contact > .ul > .li {
+    display: flex;
+    background: red;
+}
