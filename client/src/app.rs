@@ -5,9 +5,12 @@ use yew::prelude::*;
 pub fn app() -> Html {
     html! {
         <>
-             <h1>{ "Welcome to my web site :)" }</h1>
+             <h1>{ "Welcome to my web site :^) -- Under Construction" }</h1>
 
-             <Contact />
+             <footer>
+                <Contact />
+             </footer>
+
         </>
     }
 }
